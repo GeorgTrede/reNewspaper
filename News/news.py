@@ -1,5 +1,4 @@
 import json, re, time, os, requests
-
 from PIL import Image
 from io import BytesIO
 from lxml import html
@@ -32,10 +31,11 @@ numbers_sections = [20, 10, 10, 5, 5, 5]
 # to also get weather data, edit the following
 # this uses openweathermap, if you don't have an api key for that
 # head over to https://openweathermap.org/api and create one (it's free)
+# if you don't want weather, just leave the values as they are
 api_key = "YOURAPIKEY"          # get on openweathermap.com
-lat = "60"                      # your latitude
-lon = "80"                      # your longitude
-city_name = "YOURCITYNAME"      # your city (optional)
+lat = "60.001201"               # your latitude
+lon = "80.120301"               # your longitude
+city_name = "YOURCITYNAME"      # your city
 
 
 
@@ -49,6 +49,7 @@ city_name = "YOURCITYNAME"      # your city (optional)
 
 
 session = requests.session()
+get_weather = api_key != "YOURAPIKEY" # don't change this value!
 
 # dict to store everything in
 data = {"articles": []}
@@ -65,13 +66,20 @@ def latex_safe(t):
         t = t.replace(r, "\\"+r)
     return t.replace("\n", "")
 
+def remove_duplicates(x):
+    n = []
+    for y in x:
+        if y in n: continue
+        n.append(y)
+    return n
+
 for i, section in enumerate(sections):
     # get website and store it in main_tree
     main_tree = html.fromstring(session.get(base_url+section).content)
     # make all links absolute, so that we can find them easier
     main_tree.make_links_absolute(base_url)
     # finally get all links (and remove duplicates)
-    links = list(set(re.findall(url_pattern, str(html.tostring(main_tree)))))
+    links = remove_duplicates(re.findall(url_pattern, str(html.tostring(main_tree))))
 
     # now loop through all links and store the data in our data dict
 
@@ -137,9 +145,9 @@ doc.preamble.append(NoEscape(r"""\setlength{\TPHorizModule}{2.0 pt}
 \textblockorigin{\paperwidth}{1.0 pt}"""))
 doc.preamble.append(NoEscape(r'\pgfmathwidth{"Overview and""}'))
 
-
-weather_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&units=metric&appid={api_key}"
-weather = json.loads(requests.get(weather_url).content)
+if get_weather:
+    weather_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&units=metric&appid={api_key}"
+    weather = json.loads(requests.get(weather_url).content)
 
 
 # add the iconic image of the newspaper as well as a small weather info
@@ -147,13 +155,17 @@ title_table_latex = r"""
 \begin{table}[H]
     \begin{tabular}{m{2.85cm} m{5cm}}
         \hyperlink{weather}{\includegraphics[width=1cm]{weather_icons/%s.png}
-        \raisebox{.35cm}{$%s^\circ$C}} &
+        \raisebox{.35cm}{$%s}} &
         \includegraphics[width=5cm]{news.png}
     \end{tabular}
 \end{table}
 \vspace{-.5cm}"""
-doc.append(NoEscape(title_table_latex % (weather["current"]["weather"][0]["icon"][:2],
-                                         round(weather["current"]["temp"]))))
+if get_weather:
+    doc.append(NoEscape(title_table_latex % (weather["current"]["weather"][0]["icon"][:2],
+                                            str(round(weather["current"]["temp"]))+"^\circ$C")))
+else:
+    doc.append(NoEscape(title_table_latex % ("empty",
+                                            "")))
 
 # make overview pages (max 12 articles per page)
 # the overview consists of a table with alternating rows of images, titles, images, ...
@@ -201,31 +213,32 @@ for j in range(0, len(data["articles"]), 12):
     doc.append(NoEscape(r"\newpage"))
 
 # add weather page
-doc.append(NoEscape(r"""
-\hypertarget{weather}{\section*{Weather %s}}
-\begin{table}[H]
-    \centering
-    \begin{tabular}{m{.85cm} m{1.5cm} m{2.5cm} m{3.75cm} m{0.75cm}}
-    \hline
-""" % city_name))
+if get_weather:
+    doc.append(NoEscape(r"""
+    \hypertarget{weather}{\section*{Weather %s}}
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{m{.85cm} m{1.5cm} m{2.5cm} m{3.75cm} m{0.75cm}}
+        \hline
+    """ % city_name))
 
-weather_str_latex = r"""
-%s & \includegraphics[width=1.5cm]{weather_icons/%s.png} &
-\Large$%s^\circ$C\small/$%s^\circ$C & %s &
-\includegraphics[width=4mm]{weather_icons/drop} \small%s\%%\\"""
+    weather_str_latex = r"""
+    %s & \includegraphics[width=1.5cm]{weather_icons/%s.png} &
+    \Large$%s^\circ$C\small/$%s^\circ$C & %s &
+    \includegraphics[width=4mm]{weather_icons/drop} \small%s\%%\\"""
 
-# loop through all available days
-for d in weather["daily"]:
-    day = time.strftime("%a", time.gmtime(d["dt"]-time.timezone)).upper()
-    weatherday = d["weather"][0]
-    doc.append(NoEscape(weather_str_latex % (day,
-                                             weatherday["icon"][:2],
-                                             round(d["temp"]["max"]),
-                                             round(d["temp"]["min"]),
-                                             weatherday["description"].capitalize(),
-                                             round(d["pop"]*100))))
-    doc.append(NoEscape(r"""\hline"""))
-doc.append(NoEscape(r"""\end{tabular}\end{table}\newpage"""))
+    # loop through all available days
+    for d in weather["daily"]:
+        day = time.strftime("%a", time.gmtime(d["dt"]-time.timezone)).upper()
+        weatherday = d["weather"][0]
+        doc.append(NoEscape(weather_str_latex % (day,
+                                                weatherday["icon"][:2],
+                                                round(d["temp"]["max"]),
+                                                round(d["temp"]["min"]),
+                                                weatherday["description"].capitalize(),
+                                                round(d["pop"]*100))))
+        doc.append(NoEscape(r"""\hline"""))
+    doc.append(NoEscape(r"""\end{tabular}\end{table}\newpage"""))
 
 # now add all the real newspaper part, i.e. all the articles
 

@@ -1,4 +1,4 @@
-# reNewsable
+# reNewspaper
 Scrape articles from a newspaper website and stuff them into a pdf file suitable for the reMarkable tablet (including clicky pdf links). It works for the NYT newspage, but if you want a different newspaper, the files kind of help guiding you the way to get there, too.
 
 ## Who can use it?

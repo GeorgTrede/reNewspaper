@@ -89,7 +89,7 @@ for i, section in enumerate(sections):
         try:
             title_image = tree.xpath("//picture/img")[0]
             img_url = title_image.attrib["src"]
-            img_path = ".news_imgs/image_%04d.jpg"%(sum(numbers_sections[:i])+j)
+            img_path = "news_imgs/image_%04d.jpg"%(sum(numbers_sections[:i])+j)
             r = session.get(img_url, stream=True)
             Image.open(BytesIO(r.content)).convert("L").save(img_path)
 
@@ -183,7 +183,7 @@ for j in range(0, len(data["articles"]), 12):
             art_remaining -= 1
         for n in range(art_remaining):
             path = data["articles"][i+n]["img_path"]
-            if path=="": path=".news_imgs/empty_image.jpg"
+            if path=="": path="news_imgs/empty_image.jpg"
             add_str += img_str_latex % (i+n, path)
         add_str += r" \\ "
         doc.append(NoEscape(add_str))
@@ -253,7 +253,6 @@ for i, article in enumerate(data["articles"]):
 for i in range(5):
     try:
         x = doc.generate_tex("News")
-        #os.system("rm .news_imgs/image*.jpg")
         break
     except:
         pass

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="11.37846mm"
+   height="15.278837mm"
+   viewBox="0 0 11.37846 15.278837"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
+   sodipodi:docname="drop.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.1661981"
+     inkscape:cx="21.502601"
+     inkscape:cy="28.873393"
+     inkscape:document-units="mm"
+     inkscape:current-layer="svg8"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1248"
+     inkscape:window-height="778"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     showborder="false"
+     lock-margins="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-0.28652917,-0.43516326)" />
+  <path
+     id="path835"
+     stroke="#878787"
+     d="m 5.2454708,0.45583674 c 1.723,0.95199996 5.3150002,5.47699996 5.7750002,8.75599996 0.028,1.7180003 -0.534,3.1010003 -1.4500002,4.0820003 -0.969,1.037 -2.337,1.628 -3.857,1.628 -1.457,0 -2.776,-0.544 -3.74,-1.425 -0.97499997,-0.89 -1.58699997,-2.124 -1.61599997,-3.49 0.503,-4.0350003 4.01299997,-8.4900003 4.88799997,-9.55100026 z m -1.815,7.32999996 c -0.009,0.013 -0.017,0.027 -0.025,0.043 -0.322,0.62 -0.59,1.255 -0.695,2.2070003 0.012,0.408 0.143,0.787 0.358,1.111 0.234,0.352 0.568,0.641 0.96,0.839 0.035,0.017 0.071,0.021 0.106,0.017 0.04,-0.005 0.076,-0.02 0.104,-0.044 l 0.01,-0.005 -0.078,-0.1 c -0.328,-0.415 -0.82,-1.067 -0.82,-1.9460003 0,-0.752 0.076,-1.613 0.08,-2.121 z"
+     fill="none"
+     stroke-width="0.714"
+     style="stroke:#000000;stroke-opacity:1" />
+</svg>

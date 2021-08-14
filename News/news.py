@@ -31,7 +31,7 @@ numbers_sections = [20, 10, 10, 5, 5]
 # to also get weather data, edit the following
 # this uses openweathermap, so head over there and create an api key or app id
 # or something like that if you haven't done that already
-api_key = "d7f2f68392c8c22dd5e309f117862db6"          # get on openweathermap.com
+api_key = "YOURAPIKEY"          # get on openweathermap.com
 lat = "60"                      # your latitude
 lon = "80"                      # your longitude
 city_name = "YOURCITYNAME"      # your city (optional)

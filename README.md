@@ -1,5 +1,5 @@
 # reNewsable
-Scrape articles from a newspaper website and stuff them into a pdf file suitable for the reMarkable tablet. The provided files in this repo are more of a guideline how to achieve this on your own, unless you want to read the NYT...
+Scrape articles from a newspaper website and stuff them into a pdf file suitable for the reMarkable tablet (including clicky pdf links). It works for the NYT newspage, but if you want a different newspaper, the files help guiding you the way to get there.
 
 ## Who can use it?
 Basically everyone who owns a reMarkable (or comparable device) and a computer. You should also be confident using the terminal.

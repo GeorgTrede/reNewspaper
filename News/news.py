@@ -23,14 +23,15 @@ base_url = "https://www.nytimes.com/"
 # base url) here. First one "" is to get the articles on the
 # main website.
 sections = ["", "section/world", "section/technology",
-            "section/politics", "section/business"]
+            "section/politics", "section/business",
+            "section/science/space"]
 # and the numbers of articles you want for each section, same order
 # make sure sections and numbers_sections have the same length!
-numbers_sections = [20, 10, 10, 5, 5]
+numbers_sections = [20, 10, 10, 5, 5, 5]
 
 # to also get weather data, edit the following
-# this uses openweathermap, so head over there and create an api key or app id
-# or something like that if you haven't done that already
+# this uses openweathermap, if you don't have an api key for that
+# head over to https://openweathermap.org/api and create one (it's free)
 api_key = "YOURAPIKEY"          # get on openweathermap.com
 lat = "60"                      # your latitude
 lon = "80"                      # your longitude
@@ -71,7 +72,7 @@ for i, section in enumerate(sections):
     main_tree.make_links_absolute(base_url)
     # finally get all links (and remove duplicates)
     links = list(set(re.findall(url_pattern, str(html.tostring(main_tree)))))
-    
+
     # now loop through all links and store the data in our data dict
 
     for j, link in enumerate(links[:numbers_sections[i]]):
@@ -104,7 +105,7 @@ for i, section in enumerate(sections):
             data["articles"][-1]["img_url"] = ""
             data["articles"][-1]["img_path"] = ""
             data["articles"][-1]["img_caption"] = ""
-        
+
         # now get the article text
         # for NYT the <p> elements are here:
         paragraphs = tree.xpath("//section/div/div/p")
@@ -240,7 +241,7 @@ for i, article in enumerate(data["articles"]):
     # add section, i.e. title with link target
     doc.append(NoEscape(r"\section*{%s} \hypertarget{art%s}{ }" % (article["title"], i)))
     # add "Overview" button in top right corner
-    doc.append(NoEscape(r"\begin{textblock}{\pgfmathresult}[1, 0](-35, 0.25) \noindent \hyperlink{page.%d}{OVERVIEW} \end{textblock}"%(i//12)))
+    doc.append(NoEscape(r"\begin{textblock}{\pgfmathresult}[1, 0](-35, 0.25) \noindent \hyperlink{page.%d}{OVERVIEW} \end{textblock}"%(i//12+1)))
     # if there is an image present, add it now
     if article["img_path"]!= "":
         doc.append(NoEscape(article_img_latex%(article["img_path"],article["img_caption"])))

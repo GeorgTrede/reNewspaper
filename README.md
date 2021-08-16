@@ -18,7 +18,7 @@ As for python-packages, you'll need `lxml`, `Pillow` and `pylatex`. Simply insta
 `pip install lxml Pillow pylatex`
 
 
-Next, you need to have some kind of latex installed. Just search for "Install LaTeX on YOUR OS NAME" if you haven't installed it anyway. Besides the usual installation, I used `latexmk` to make my life easier, so make sure this is installed as well. [Here](https://mg.readthedocs.io/latexmk.html) is a guideline for that.
+Next, you need to have some kind of latex installed. Just search for "Install LaTeX on YOUR OS NAME" if you haven't installed it anyway. Apart from the usual installation, I used `latexmk` to make my life easier, so make sure this is installed as well. [Here](https://mg.readthedocs.io/latexmk.html) is a guideline for that.
 
 And that's all you need.
 

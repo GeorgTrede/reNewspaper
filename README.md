@@ -3,7 +3,7 @@
 ![reNewspaper](https://user-images.githubusercontent.com/38717655/129438940-f853c106-e55b-4cf6-a3b2-ff79114fd6d3.jpg)
 
 
-Scrape articles from a newspaper website and stuff them into a pdf file suitable for the reMarkable tablet (including clicky pdf links). It works for the NYT newspage, but if you want a different newspaper, the files kind of help guiding you the way to get there, too.
+Scrape articles from a newspaper website and stuff them into a pdf file suitable for the reMarkable tablet (including clicky pdf links). It works for the NYT, The Guardian, Canberra Times und Die Zeit newspages, but if you want a different newspaper, the files kind of help guiding you the way to get there, too. The provided run.sh program also allows to update the News.pdf on the reMarkable to save the step of uploading the generated and deleting the old file manually.
 
 ## Who can use it?
 Basically everyone who owns a reMarkable (or comparable device) and a computer. You should also be confident using the terminal.

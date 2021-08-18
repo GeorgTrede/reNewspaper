@@ -1,4 +1,4 @@
-import json, re, time, os, requests
+import json, re, time, os, requests, traceback
 from PIL import Image
 from io import BytesIO
 from lxml import html
@@ -6,29 +6,7 @@ from lxml.html.clean import clean_html
 import pylatex as tex
 from pylatex.utils import NoEscape
 
-#
-# In case you just want to read the NYT you just need to edit the following
-# things. Otherwise have a look at the rest of the program and work your way
-# through it. Either way, I don't guarantee that this works, all I can say is
-# it works for me ;)
-#
-
-# base url of your news website
-base_url = "https://www.nytimes.com/"
-
-# different sections you want to get articles from
-# e.g. politics, sports, travel, world etc.
-# find the website for these sections and add the path (without
-# base url) here. First one "" is to get the articles on the
-# main website.
-sections = ["", "section/world", "section/technology",
-            "section/politics", "section/business",
-            "section/science/space"]
-# and the numbers of articles you want for each section, same order
-# make sure sections and numbers_sections have the same length!
-numbers_sections = [20, 10, 10, 5, 5, 5]
-
-# to also get weather data, edit the following
+# to get weather data, edit the following
 # this uses openweathermap, if you don't have an api key for that
 # head over to https://openweathermap.org/api and create one (it's free)
 # if you don't want weather, just leave the values as they are
@@ -37,11 +15,107 @@ lat = "60.001201"               # your latitude
 lon = "80.120301"               # your longitude
 city_name = "YOURCITYNAME"      # your city
 
+# select one of the newspapers from the dictionary below
+# i.e. "nytimes" (New York Times, US)
+#  or  "guardian" (The Guardian, UK/International)
+#  or  "cbrtimes" (Canberra Times, AUS)
+#  or  "zeitonline" (Die Zeit, GER)
+MYNEWSPAPER = "nytimes"
+
+
+newspapers={"nytimes":{
+                "url": "https://www.nytimes.com/",
+                "pattern": "https\:\/\/www\.nytimes\.com\/[0-9]+\/[0-9]+\/[0-9]+\/[a-z\-\/]+\.html",
+                "title_text": "//h1/text()",
+                "title_img": "//picture/img",
+                "article_text": "//section/div/div/p",
+                "logo": "nytimes.png",
+                "sections": ["", "section/world", "section/technology", "section/politics", "section/business", "section/science/space"],
+                "numbers_sections" : [10, 5, 5, 2, 2, 2]},
+            "guardian":{
+                "url": "https://www.theguardian.com/",
+                "pattern": "https\:\/\/www\.theguardian\.com\/[a-z]+\/[0-9]+\/[a-z]+\/[0-9]+\/[a-z\-\/]+",
+                "title_text": "//h1/text()",
+                "title_img": "//picture/img",
+                "article_text": "//div[@id='maincontent']/div/p",
+                "logo": "guardian.png",
+                "sections" : ["", "us-news", "technology", "environment"],
+                "numbers_sections": [10, 5, 5, 5]
+                },
+            "cbrtimes":{
+                "url": "https://www.canberratimes.com.au/",
+                "pattern": "https\:\/\/www\.canberratimes\.com\.au\/story\/[0-9]+\/[a-z0-9\-\/]+",
+                "title_text": "//h1/text()",
+                "title_img": "//picture/img",
+                "article_text": "//div[@class='assets']/p",
+                "logo": "cbrtimes.png",
+                "sections" : ["", "news/technology", "news/environment", "news/national"],
+                "numbers_sections": [10, 5, 5, 5]
+                },
+            "zeitonline":{
+                "url": "https://www.zeit.de/",
+                "pattern": "https\:\/\/www\.zeit\.de\/[a-z0-9\-\/]+\/[0-9]+-[0-9]+\/[a-z0-9\-\/]+",
+                "title_text": "//h1/span[contains(@class,'heading__title')]/text()",
+                "title_img": "//figure/div/noscript/img",
+                "article_text": "//p[contains(@class, 'paragraph')]",
+                "logo": "zeit.png",
+                "sections" : ["", "wissen", "politik/deutschland", "politik/ausland", "sport"],
+                "numbers_sections": [10, 5, 5, 5, 5]
+                }
+        }
+
+
+# Want to add your own newspaper? I can't promise the following steps
+# work in every case, but maybe they do, so give it a try ;)
+
+# 1. Add a new entry in the newspaper dictionary above. Just follow the
+#    format of the first four entries. 
+# 2. Open your newspage in a browser and copy the url to "url": "..." in
+#    the dict
+# 3. Open a few different articles and look at their urls. Can you find a
+#    pattern? Then add this pattern (using regex) to "pattern": "..." in
+#    the dict. Don't know what regex is? I'm sure you'll find a good tutorial
+#    on the Internet
+# 4. Open a few different articles again, right-click on their title and click
+#    on 'Inspect Element'. Find an xpath to the title and set this xpath in
+#    "title_text": "..." in the dict. Don't know what xpath is and don't really
+#    want to find out? Then you can try right-clicking on that html element that
+#    was highlighted after you clicked 'Inspect Element'. There should be an
+#    option like 'Copy' and then 'XPath' somewhere. You can set the "title_text"
+#    in the dict to that xpath and add '/text()' behind it, but most likely it
+#    won't work perfectly...
+# 5. Repeat the same procedure for the title image (just without the '/text()')
+#    behind the xpath
+# 6. Same for your article_text
+# 7. Download the logo image of your newspaper to the "news_icons" folder and
+#    add "logo": "name_of_logo_image.png" to the dict
+# 8. Go to different sections of your newspage and add the ones you like to
+#    the dict
+# 9. Finally specify the number of articles for each section
+# 10. Set MYNEWSPAPER to your newly added newspaper and run the program.
+# 11. Did it work?
+#     YES -> Great, congratulations!
+#     NO -> Try setting 'show_errors' to 'True' (just a bit below here). When
+#           you run the program again, it will output errors, so you can see
+#           what went wrong. Mostly it is stuff connected to xpath.
+#           Otherwise you'll need to work your way through the code below.
+#           Good luck with that ;)
 
 
 
 
 
+
+
+
+
+base_url = newspapers[MYNEWSPAPER]["url"]
+
+# if downloading an article fails, the error is suppressed (not printed)
+# unless you set this to true
+# this is helpfull when you add a new newspaper and want to find out
+# what is failing
+show_errors = False
 
 
 
@@ -58,13 +132,16 @@ data = {"articles": []}
 # for NYT a typical url looks like this:
 # https://www.nytimes.com/2021/08/12/us/politics/supreme-court-new-york-eviction-moratorium.html
 # so the regex could be
-url_pattern = "https\:\/\/www\.nytimes\.com\/[0-9]+\/[0-9]+\/[0-9]+\/[a-z\-\/]+\.html"
+url_pattern = newspapers[MYNEWSPAPER]["pattern"]
+numbers_sections = newspapers[MYNEWSPAPER]["numbers_sections"]
 
 # define a function to make text latex safe, i.e. add backslash before special char
 def latex_safe(t):
     for r in ["$", "%"]:
         t = t.replace(r, "\\"+r)
-    return t.replace("\n", "")
+    t = t.replace(r"&ldquo;", "''")
+    t = t.replace(r"&rdquo;", "''")
+    return t.replace("\n", " ")
 
 def remove_duplicates(x):
     n = []
@@ -73,7 +150,9 @@ def remove_duplicates(x):
         n.append(y)
     return n
 
-for i, section in enumerate(sections):
+all_urls = []
+
+for i, section in enumerate(newspapers[MYNEWSPAPER]["sections"]):
     # get website and store it in main_tree
     main_tree = html.fromstring(session.get(base_url+section).content)
     # make all links absolute, so that we can find them easier
@@ -82,44 +161,67 @@ for i, section in enumerate(sections):
     links = remove_duplicates(re.findall(url_pattern, str(html.tostring(main_tree))))
 
     # now loop through all links and store the data in our data dict
-
-    for j, link in enumerate(links[:numbers_sections[i]]):
-        print(f"\rDownloaded {sum(numbers_sections[:i])+j+1} of {sum(numbers_sections)}", end="")
-        data["articles"].append({})
-        tree = html.fromstring(session.get(link).text)
-        data["articles"][-1]["url"] = link
-        # get the title of the article using xpath
-        # for NYT it is the first h1
-        data["articles"][-1]["title"] = latex_safe(tree.xpath("//h1/text()")[0])
-
-        # check if there is a title image and if there is, download it
-        # and convert it to grayscale
-        # for NYT this is in //picture/img
+    j = 0
+    successes = 0
+    while successes<min(numbers_sections[i], len(links)):
+        link = links[j]
+        if link in all_urls:
+            j += 1
+            continue
+        print(f"\rDownloading {sum(numbers_sections[:i])+successes+1} of {sum(numbers_sections)}", end="")
         try:
-            title_image = tree.xpath("//picture/img")[0]
-            img_url = title_image.attrib["src"]
-            img_path = "news_imgs/image_%04d.jpg"%(sum(numbers_sections[:i])+j)
-            r = session.get(img_url, stream=True)
-            Image.open(BytesIO(r.content)).convert("L").save(img_path)
+            tree = html.fromstring(session.get(link).text)
+            tree.make_links_absolute(base_url)
 
-            data["articles"][-1]["img_url"] = img_url
-            data["articles"][-1]["img_path"] = img_path
-            if "alt" in title_image.attrib.keys():
-                data["articles"][-1]["img_caption"] = title_image.attrib["alt"]
-            else:
+            # in case there is always a known article that you don't want
+            # (e.g. advertisment) with the same link pattern, skip it here
+            # with a known condition
+            # here: if the title is " Space for ", then skip
+            if tree.xpath(newspapers[MYNEWSPAPER]["title_text"])[0] == " Space for ":
+                continue
+            data["articles"].append({})
+            data["articles"][-1]["url"] = link
+            # get the title of the article using xpath
+            # for NYT it is the first h1
+            data["articles"][-1]["title"] = latex_safe(tree.xpath(newspapers[MYNEWSPAPER]["title_text"])[0])
+
+            # check if there is a title image and if there is, download it
+            # and convert it to grayscale
+            # for NYT this is in //picture/img
+            try:
+                title_image = tree.xpath(newspapers[MYNEWSPAPER]["title_img"])[0]
+                img_url = title_image.attrib["src"]
+                img_path = "news_imgs/image_%04d.jpg"%(sum(numbers_sections[:i])+successes)
+                r = session.get(img_url, stream=True)
+                Image.open(BytesIO(r.content)).convert("L").save(img_path)
+
+                data["articles"][-1]["img_url"] = img_url
+                data["articles"][-1]["img_path"] = img_path
+                if "alt" in title_image.attrib.keys():
+                    data["articles"][-1]["img_caption"] = latex_safe(title_image.attrib["alt"])
+                else:
+                    data["articles"][-1]["img_caption"] = ""
+
+            except Exception:
+                data["articles"][-1]["img_url"] = ""
+                data["articles"][-1]["img_path"] = ""
                 data["articles"][-1]["img_caption"] = ""
 
-        except IndexError:
-            data["articles"][-1]["img_url"] = ""
-            data["articles"][-1]["img_path"] = ""
-            data["articles"][-1]["img_caption"] = ""
-
-        # now get the article text
-        # for NYT the <p> elements are here:
-        paragraphs = tree.xpath("//section/div/div/p")
-        data["articles"][-1]["text"] = []
-        for p in paragraphs:
-            data["articles"][-1]["text"].append(p.text_content())
+            # now get the article text
+            # for NYT the <p> elements are here:
+            paragraphs = tree.xpath(newspapers[MYNEWSPAPER]["article_text"])
+            data["articles"][-1]["text"] = []
+            for p in paragraphs:
+                data["articles"][-1]["text"].append(latex_safe(p.text_content()))
+            successes += 1
+            all_urls.append(link)
+        except Exception as e:
+            if show_errors:
+                print("\rSome error occured, skipping link", link)
+                traceback.print_exc()
+                time.sleep(1)
+                print("\n\n")
+        j += 1
 print()
 # that was the scraping part
 
@@ -155,17 +257,17 @@ title_table_latex = r"""
 \begin{table}[H]
     \begin{tabular}{m{2.85cm} m{5cm}}
         \hyperlink{weather}{\includegraphics[width=1cm]{weather_icons/%s.png}
-        \raisebox{.35cm}{$%s}} &
-        \includegraphics[width=5cm]{news.png}
+        \raisebox{.35cm}{$%s$}} &
+        \includegraphics[width=5cm]{news_icons/%s}
     \end{tabular}
 \end{table}
 \vspace{-.5cm}"""
 if get_weather:
     doc.append(NoEscape(title_table_latex % (weather["current"]["weather"][0]["icon"][:2],
-                                            str(round(weather["current"]["temp"]))+"^\circ$C")))
+                                            str(round(weather["current"]["temp"]))+"^\circ$C",
+                                            newspapers[MYNEWSPAPER]["logo"])))
 else:
-    doc.append(NoEscape(title_table_latex % ("empty",
-                                            "")))
+    doc.append(NoEscape(title_table_latex % ("empty", "", newspapers[MYNEWSPAPER]["logo"])))
 
 # make overview pages (max 12 articles per page)
 # the overview consists of a table with alternating rows of images, titles, images, ...
@@ -173,7 +275,7 @@ img_str_latex = r"""
 \centering
 \hyperlink{art%s}{
     \includegraphics[width=0.3\textwidth,
-                     height=0.12\textheight,
+                     height=0.11\textheight,
                      keepaspectratio]
                      {%s}
 } &"""

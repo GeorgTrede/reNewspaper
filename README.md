@@ -36,22 +36,22 @@ root@reMarkable:~/.local/share/remarkable/xochitl# grep -i news *.metadata
 7. Back on your computer, navigate to the downloaded News folder.
 8. Open the `run.sh` file, find the line starting with `id_of_news=` and replace the id here with the one you just wrote down.
 9. While you are editing this file anyway, you can also edit the default used ip address of your reMarkable. If you usually connect your tablet via cable, just leave it as it is, otherwise find the local network ip and replace the `10.11.99.1` with it.
-10. Open the `news.py` file and follow the comments in there.
+10. Lastly, open the `news.py` file and follow the comments in there.
 
 ## How do I run it?
 Open your terminal and navigate to this "News" folder. Make sure your reMarkable is on and either connected to wifi or to your computer via cable. Then execute `. run.sh REMARKABLEIPADDRESSHERE`. If you added your ip address in the steps above, you can also just run `. run.sh`.
 
 To make your life easier you could make an alias or something, but that's of course up to you.
 
-## I like the NYT but want more sports articles!
+## I like the NYT/Guardian/... but want more sports articles!
 No problem! Just follow these steps:
-1. Head over to [nytimes.com](https://nytimes.com) and go to the section that you want articles from.
-2. Check the url and copy the part behind `https://nytimes.com/`, e.g. `section/sports` for `https://nytimes.com/section/sports`.
-3. Open the `news.py` file and find the part `sections = ["", ...]`
+1. Head over to the website of your newspaper and go to the section that you want articles from.
+2. Check the url and copy the part behind the base url part (e.g. for `https://nytimes.com/section/sports` it would be `section/sports`).
+3. Open the `news.py` file and find the part `sections = ["", ...]` in the `newspapers` dictionary. Make sure you're in the line corresponding to your chosen newspaper.
 4. Add your new section (e.g. `section/sports`) to this list and remove sections you don't want. You can also change the order of the sections. The empty string `""` is the main page, so probably you want to keep that one.
-5. Edit the line `numbers_sections = [20, 10, ...]` a bit lower. This sets how many article for the according section are downloaded. So if you want more articles from the first section (or the main page), just make that number higher. Make sure that the length of this list matches with the length of the sections, otherwise you'll run into problems! Also if the numbers you enter are too high, there might be problems as well (beside the fact that your pdf file will blow up in size).
+5. Edit the line `numbers_sections = [20, 10, ...]` just below. This sets how many article for the according section are downloaded. So if you want more articles from the first section (or the main page), just make that number higher. Make sure that the length of this list matches with the length of the sections, otherwise you'll run into problems! Also if the numbers you enter are too high, there might be problems as well (beside the fact that your pdf file will blow up in size).
 
-## I want to have a different newspaper!
+## I want to have a completely different newspaper!
 Well no problem again! Just this time, you have to fully do it yourself ;)
 
-I commented the `news.py` file, so I hope that this helps if you want to scrape a different newspage. Good luck!
+I outlined the way to go in the `news.py` file, so I hope that this helps if you want to scrape a different newspage. Good luck!

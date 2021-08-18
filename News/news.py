@@ -128,10 +128,6 @@ get_weather = api_key != "YOURAPIKEY" # don't change this value!
 # dict to store everything in
 data = {"articles": []}
 
-# we will use regex to find the links to the articles
-# for NYT a typical url looks like this:
-# https://www.nytimes.com/2021/08/12/us/politics/supreme-court-new-york-eviction-moratorium.html
-# so the regex could be
 url_pattern = newspapers[MYNEWSPAPER]["pattern"]
 numbers_sections = newspapers[MYNEWSPAPER]["numbers_sections"]
 
@@ -182,12 +178,10 @@ for i, section in enumerate(newspapers[MYNEWSPAPER]["sections"]):
             data["articles"].append({})
             data["articles"][-1]["url"] = link
             # get the title of the article using xpath
-            # for NYT it is the first h1
             data["articles"][-1]["title"] = latex_safe(tree.xpath(newspapers[MYNEWSPAPER]["title_text"])[0])
 
-            # check if there is a title image and if there is, download it
-            # and convert it to grayscale
-            # for NYT this is in //picture/img
+            # check if there is a title image and if there is, download it,
+            # convert it to grayscale and save it
             try:
                 title_image = tree.xpath(newspapers[MYNEWSPAPER]["title_img"])[0]
                 img_url = title_image.attrib["src"]
@@ -208,7 +202,6 @@ for i, section in enumerate(newspapers[MYNEWSPAPER]["sections"]):
                 data["articles"][-1]["img_caption"] = ""
 
             # now get the article text
-            # for NYT the <p> elements are here:
             paragraphs = tree.xpath(newspapers[MYNEWSPAPER]["article_text"])
             data["articles"][-1]["text"] = []
             for p in paragraphs:

@@ -32,7 +32,8 @@ latexmk -f -pdf -silent News.tex &> log_file.txt
 
 if grep -i "error" log_file.txt &> /dev/null
 then
-	echo "An error occured while generating the pdf:"
+	echo ""
+	echo "An ERROR occured while generating the pdf. It is stored in 'log_file.txt':"
 	cat log_file.txt
 else
 	mv News.pdf Newspaper.pdf

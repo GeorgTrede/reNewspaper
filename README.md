@@ -39,7 +39,7 @@ root@reMarkable:~/.local/share/remarkable/xochitl# grep -i news *.metadata
 10. Lastly, open the `news.py` file and follow the comments in there.
 
 ## How do I run it?
-Open your terminal and navigate to this "News" folder. Make sure your reMarkable is on and either connected to wifi or to your computer via cable. Then execute `. run.sh REMARKABLEIPADDRESSHERE`. If you added your ip address in the steps above, you can also just run `. run.sh`.
+Open your terminal and navigate to this "News" folder. Make sure your reMarkable is on and either connected to wifi or to your computer via cable. Then execute `bash run.sh REMARKABLEIPADDRESSHERE`. If you added your ip address in the steps above, you can also just run `bash run.sh`.
 
 To make your life easier you could make an alias or something, but that's of course up to you.
 

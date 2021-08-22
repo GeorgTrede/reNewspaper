@@ -27,16 +27,23 @@ fi
 echo "Starting to generate newspaper..."
 echo "Fetching articles from website..."
 python3 news.py
-echo "TeX file generated, generating pdf file now..."
-latexmk -f -pdf -silent News.tex &> /dev/null
-mv News.pdf Newspaper.pdf
-rm News.*
-mv Newspaper.pdf News.pdf
-echo "Done"
-echo "Uploading to reMarkable now..."
+echo "TeX file generated, trying to generate pdf file now..."
+latexmk -f -pdf -silent News.tex &> log_file.txt
 
-scp News.pdf root@$ip:/home/root/.local/share/remarkable/xochitl/$id_of_news_doc.pdf
-ssh root@$ip "rm /home/root/.local/share/remarkable/xochitl/$id_of_news_doc.thumbnails/*" &> /dev/null
+if grep -i "error" log_file.txt &> /dev/null
+then
+	echo "An error occured while generating the pdf:"
+	cat log_file.txt
+else
+	mv News.pdf Newspaper.pdf
+	rm News.*
+	mv Newspaper.pdf News.pdf
+	echo "Done"
+	echo "Uploading to reMarkable now..."
 
-echo "Done"
-echo "Enjoy your day!"
+	scp News.pdf root@$ip:/home/root/.local/share/remarkable/xochitl/$id_of_news_doc.pdf
+	ssh root@$ip "rm /home/root/.local/share/remarkable/xochitl/$id_of_news_doc.thumbnails/*" &> /dev/null
+
+	echo "Done"
+	echo "Enjoy your day!"
+fi

@@ -49,7 +49,7 @@ No problem! Just follow these steps:
 2. Check the url and copy the part behind the base url part (e.g. for `https://nytimes.com/section/sports` it would be `section/sports`).
 3. Open the `news.py` file and find the part `sections = ["", ...]` in the `newspapers` dictionary. Make sure you're in the line corresponding to your chosen newspaper.
 4. Add your new section (e.g. `section/sports`) to this list and remove sections you don't want. You can also change the order of the sections. The empty string `""` is the main page, so probably you want to keep that one.
-5. Edit the line `numbers_sections = [20, 10, ...]` just below. This sets how many article for the according section are downloaded. So if you want more articles from the first section (or the main page), just make that number higher. Make sure that the length of this list matches with the length of the sections, otherwise you'll run into problems! Also if the numbers you enter are too high, there might be problems as well (beside the fact that your pdf file will blow up in size).
+5. Edit the line `numbers_sections = [20, 10, ...]` just below. This sets how many article for the according section are downloaded. So if you want more articles from the first section (or the main page), just make that number higher. Make sure that the length of this list matches with the length of the sections, otherwise you'll run into problems! Also if the numbers you enter are too high (like 75 or something), there might be problems as well (beside the fact that your pdf file will blow up in size).
 
 ## I want to have a completely different newspaper!
 Well no problem again! Just this time, you have to fully do it yourself ;)

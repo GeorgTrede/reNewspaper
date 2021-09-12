@@ -18,7 +18,7 @@ As for python-packages, you'll need `lxml`, `Pillow` and `pylatex`. Simply insta
 `pip install lxml Pillow pylatex`
 
 
-Next, you need to have some kind of latex installed. Just search for "Install LaTeX on YOUR OS NAME" if you haven't installed it anyway. Apart from the usual installation, I used `latexmk` to make my life easier, so make sure this is installed as well. [Here](https://mg.readthedocs.io/latexmk.html) is a guideline for that. For some, an error with `pdftexcmds` was reported, which was solved by installing `texlive-latex-extra`.
+Next, you need to have some kind of latex installed. Just search for "Install LaTeX on YOUR OS NAME" if you haven't installed it anyway. Apart from the usual installation, I used `latexmk` to make my life easier, so make sure this is installed as well. [Here](https://mg.readthedocs.io/latexmk.html) is a guideline for that. For some, an error with `pdftexcmds` was reported, which was solved by installing `texlive-latex-extra`. And if you're on Ubuntu you might need to install these packages aside from the standard latex installation: `sudo apt install latexmk texlive-latex-extra texlive-fonts-recommended`.
 
 And last, to transfer the newspaper to our tablet, we'll use the [rmapi](https://github.com/juruen/rmapi) which will connect to the remarkable cloud. Follow the steps there or simply download the built binary release [here](https://github.com/juruen/rmapi/releases) and move it to a path, where it can be found, e.g. `/usr/share/bin/`. Set up the program by simply typing `rmapi` and following the steps presented.
 

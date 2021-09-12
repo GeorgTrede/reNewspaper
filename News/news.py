@@ -14,6 +14,7 @@ api_key = "YOURAPIKEY"          # get on openweathermap.com
 lat = "60.001201"               # your latitude
 lon = "80.120301"               # your longitude
 city_name = "YOURCITYNAME"      # your city
+units = "metric"                # preferred unit (metric or imperial)
 
 # select one of the newspapers from the dictionary below
 # i.e. "nytimes" (New York Times, US)
@@ -110,7 +111,7 @@ newspapers={"nytimes":{
 
 
 base_url = newspapers[MYNEWSPAPER]["url"]
-
+degrees = "C" if units=="metric" else "F"
 # if downloading an article fails, the error is suppressed (not printed)
 # unless you set this to true
 # this is helpfull when you add a new newspaper and want to find out
@@ -241,7 +242,7 @@ doc.preamble.append(NoEscape(r"""\setlength{\TPHorizModule}{2.0 pt}
 doc.preamble.append(NoEscape(r'\pgfmathwidth{"Overview and""}'))
 
 if get_weather:
-    weather_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&units=metric&appid={api_key}"
+    weather_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}&units={units}"
     weather = json.loads(requests.get(weather_url).content)
 
 
@@ -257,7 +258,7 @@ title_table_latex = r"""
 \vspace{-.5cm}"""
 if get_weather:
     doc.append(NoEscape(title_table_latex % (weather["current"]["weather"][0]["icon"][:2],
-                                            str(round(weather["current"]["temp"]))+"^\circ$C",
+                                            str(round(weather["current"]["temp"]))+"^\circ$"+degrees,
                                             newspapers[MYNEWSPAPER]["logo"])))
 else:
     doc.append(NoEscape(title_table_latex % ("empty", "", newspapers[MYNEWSPAPER]["logo"])))
@@ -319,7 +320,7 @@ if get_weather:
 
     weather_str_latex = r"""
     %s & \includegraphics[width=1.5cm]{weather_icons/%s.png} &
-    \Large$%s^\circ$C\small/$%s^\circ$C & %s &
+    \Large$%s^\circ$%s\small/$%s^\circ$%s & %s &
     \includegraphics[width=4mm]{weather_icons/drop} \small%s\%%\\"""
 
     # loop through all available days
@@ -329,7 +330,9 @@ if get_weather:
         doc.append(NoEscape(weather_str_latex % (day,
                                                 weatherday["icon"][:2],
                                                 round(d["temp"]["max"]),
+                                                degrees,
                                                 round(d["temp"]["min"]),
+                                                degrees,
                                                 weatherday["description"].capitalize(),
                                                 round(d["pop"]*100))))
         doc.append(NoEscape(r"""\hline"""))

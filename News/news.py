@@ -251,7 +251,7 @@ title_table_latex = r"""
 \begin{table}[H]
     \begin{tabular}{m{2.85cm} m{5cm}}
         \hyperlink{weather}{\includegraphics[width=1cm]{weather_icons/%s.png}
-        \raisebox{.35cm}{$%s$}} &
+        \raisebox{.35cm}{$%s}} &
         \includegraphics[width=5cm]{news_icons/%s}
     \end{tabular}
 \end{table}
